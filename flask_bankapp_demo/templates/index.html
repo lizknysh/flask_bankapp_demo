@@ -1,0 +1,1370 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+>
+
+<title>SWAG Bank | Account Dashboard</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    :root {
+        --purple-dark: #35145f;
+        --purple: #6d28d9;
+        --purple-mid: #7c3aed;
+        --purple-light: #ede9fe;
+
+        --orange: #f97316;
+        --orange-light: #fff1e7;
+
+        --pink: #ec4899;
+        --pink-light: #fce7f3;
+
+        --background: #f7f3ff;
+        --background-two: #fff8f3;
+
+        --text: #241b2f;
+        --muted: #766b80;
+
+        --white: #ffffff;
+
+        --green: #15803d;
+        --red: #dc2626;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        font-family:
+            "Open Sans",
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+        color: var(--text);
+
+        /* A layered background */
+        background:
+            radial-gradient(
+                circle at 8% 12%,
+                rgba(124, 58, 237, 0.16),
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 92% 18%,
+                rgba(249, 115, 22, 0.13),
+                transparent 24%
+            ),
+            radial-gradient(
+                circle at 75% 90%,
+                rgba(236, 72, 153, 0.08),
+                transparent 25%
+            ),
+            linear-gradient(
+                135deg,
+                var(--background),
+                var(--background-two)
+            );
+
+        min-height: 100vh;
+
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Decorative floating shapes */
+
+    body::before {
+        content: "✦";
+
+        position: fixed;
+        top: 120px;
+        left: 3%;
+
+        font-size: 48px;
+
+        color: rgba(109, 40, 217, 0.16);
+
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    body::after {
+        content: "✿";
+
+        position: fixed;
+        right: 3%;
+        bottom: 12%;
+
+        font-size: 70px;
+
+        color: rgba(249, 115, 22, 0.13);
+
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Top Navigation Bar */
+
+    .navbar {
+        background: rgba(255, 255, 255, 0.72);
+
+        backdrop-filter: blur(14px);
+
+        color: var(--text);
+
+        padding: 17px 6%;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 16px;
+        flex-wrap: wrap;
+
+        border-bottom: 1px solid rgba(109, 40, 217, 0.08);
+
+        box-shadow:
+            0 8px 30px rgba(69, 37, 95, 0.05);
+
+        position: relative;
+        z-index: 2;
+    }
+
+    .brand {
+        font-size: 25px;
+        font-weight: 800;
+
+        letter-spacing: -0.7px;
+
+        color: var(--purple-dark);
+
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .brand::before {
+        content: "✦";
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 34px;
+        height: 34px;
+
+        margin-right: 4px;
+
+        border-radius: 11px;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--purple),
+                var(--pink)
+            );
+
+        box-shadow:
+            0 6px 16px rgba(109, 40, 217, 0.22);
+
+        font-size: 16px;
+    }
+
+    .brand span {
+        color: var(--orange);
+    }
+
+    .demo-badge {
+        background: var(--purple-light);
+
+        color: var(--purple);
+
+        padding: 9px 15px;
+
+        border-radius: 999px;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        border: 1px solid rgba(124, 58, 237, 0.1);
+
+        box-shadow:
+            0 4px 12px rgba(109, 40, 217, 0.06);
+    }
+
+    /* Page Layout */
+
+    .container {
+        max-width: 1150px;
+
+        margin: 38px auto;
+
+        padding: 0 20px;
+    }
+
+    /* Welcome Section */
+
+    .welcome {
+        position: relative;
+
+        padding: 4px 5px 8px;
+    }
+
+    .welcome::after {
+        content: "♡";
+
+        position: absolute;
+
+        right: 20px;
+        top: 5px;
+
+        font-size: 42px;
+
+        color: rgba(236, 72, 153, 0.15);
+
+        transform: rotate(12deg);
+    }
+
+    .welcome h1 {
+        margin: 0 0 8px;
+
+        font-size: 32px;
+
+        letter-spacing: -1px;
+
+        color: var(--purple-dark);
+    }
+
+    .welcome h1::first-letter {
+        color: var(--purple);
+    }
+
+    .welcome p {
+        color: var(--muted);
+
+        margin-top: 0;
+
+        font-size: 15px;
+    }
+
+    /* Cards */
+
+    .card {
+        padding: 24px;
+
+        background: rgba(255, 255, 255, 0.82);
+
+        backdrop-filter: blur(10px);
+
+        border-radius: 24px;
+
+        border: 1px solid rgba(124, 58, 237, 0.09);
+
+        box-shadow:
+            0 10px 30px rgba(91, 42, 134, 0.07);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 16px 35px rgba(91, 42, 134, 0.10);
+    }
+
+    /* Account Summary */
+
+    .summary-grid {
+        display: grid;
+
+        grid-template-columns: 2fr 1fr 1fr;
+
+        gap: 20px;
+
+        margin: 24px 0;
+    }
+
+    /* Main balance card */
+
+    .balance-card {
+        position: relative;
+
+        overflow: hidden;
+
+        background:
+            radial-gradient(
+                circle at 88% 15%,
+                rgba(255, 255, 255, 0.20),
+                transparent 24%
+            ),
+            radial-gradient(
+                circle at 10% 100%,
+                rgba(249, 115, 22, 0.50),
+                transparent 32%
+            ),
+            linear-gradient(
+                135deg,
+                #4c1d95,
+                #6d28d9 55%,
+                #8b5cf6
+            );
+
+        color: white;
+
+        border: 0;
+
+        box-shadow:
+            0 18px 38px rgba(91, 42, 134, 0.22);
+    }
+
+    /* Decorative circle inside balance card */
+
+    .balance-card::before {
+        content: "";
+
+        position: absolute;
+
+        width: 170px;
+        height: 170px;
+
+        right: -60px;
+        top: -80px;
+
+        border-radius: 50%;
+
+        border: 28px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .balance-card::after {
+        content: "✦";
+
+        position: absolute;
+
+        right: 25px;
+        bottom: 15px;
+
+        font-size: 55px;
+
+        color: rgba(255, 255, 255, 0.13);
+
+        transform: rotate(15deg);
+    }
+
+    .balance-card .card-label {
+        position: relative;
+        z-index: 1;
+
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .card-label {
+        margin: 0 0 12px;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        letter-spacing: 0.4px;
+    }
+
+    .amount {
+        margin: 0;
+
+        font-size: 30px;
+
+        font-weight: 800;
+
+        letter-spacing: -1px;
+    }
+
+    .balance-card .amount {
+        font-size: 40px;
+
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-note {
+        margin-bottom: 0;
+
+        font-size: 13px;
+    }
+
+    .balance-card .card-note {
+        position: relative;
+        z-index: 1;
+
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    /* Small summary cards */
+
+    .summary-grid > .card:not(.balance-card) {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-grid > .card:not(.balance-card)::before {
+        content: "";
+
+        position: absolute;
+
+        width: 80px;
+        height: 80px;
+
+        right: -30px;
+        bottom: -30px;
+
+        border-radius: 50%;
+
+        background: var(--purple-light);
+
+        opacity: 0.55;
+    }
+
+    .summary-grid > .card:nth-child(3)::before {
+        background: var(--orange-light);
+    }
+
+    .summary-grid > .card:not(.balance-card):hover {
+        border-color: rgba(124, 58, 237, 0.18);
+    }
+
+    .muted {
+        color: var(--muted);
+    }
+
+    .green {
+        color: var(--green);
+    }
+
+    .red {
+        color: var(--red);
+    }
+
+    /* Customer + Banking Operations Section */
+
+    .main-grid {
+        display: grid;
+
+        grid-template-columns: 1fr 2fr;
+
+        gap: 20px;
+
+        align-items: start;
+    }
+
+    h2 {
+        margin-top: 0;
+
+        font-size: 20px;
+
+        color: var(--purple-dark);
+
+        letter-spacing: -0.3px;
+    }
+
+    h3 {
+        color: var(--purple-dark);
+    }
+
+    /* Profile */
+
+    .profile {
+        display: flex;
+
+        align-items: center;
+
+        gap: 14px;
+
+        margin-bottom: 24px;
+    }
+
+    .avatar {
+        width: 52px;
+        height: 52px;
+
+        border-radius: 17px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--purple),
+                var(--pink)
+            );
+
+        color: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 23px;
+        font-weight: bold;
+
+        box-shadow:
+            0 7px 18px rgba(109, 40, 217, 0.22);
+
+        position: relative;
+    }
+
+    .avatar::after {
+        content: "✦";
+
+        position: absolute;
+
+        right: -5px;
+        top: -8px;
+
+        color: var(--orange);
+
+        font-size: 15px;
+    }
+
+    .profile-name {
+        margin: 0 0 5px;
+
+        font-weight: 800;
+    }
+
+    .profile-note {
+        margin: 0;
+
+        font-size: 13px;
+
+        color: var(--muted);
+    }
+
+    /* Account Details */
+
+    .details {
+        margin: 0;
+    }
+
+    .details div {
+        padding: 12px 0;
+
+        border-bottom: 1px solid #eee7f5;
+    }
+
+    .details div:last-child {
+        border-bottom: 0;
+    }
+
+    .details dt {
+        color: var(--muted);
+
+        font-size: 12px;
+
+        margin-bottom: 5px;
+    }
+
+    .details dd {
+        margin: 0;
+
+        font-weight: 700;
+
+        color: var(--text);
+    }
+
+    /* Operations */
+
+    .operations-grid {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 24px;
+    }
+
+    .operations-grid section {
+        padding: 18px;
+
+        border-radius: 19px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(237, 233, 254, 0.72),
+                rgba(255, 255, 255, 0.75)
+            );
+
+        border: 1px solid #e8def8;
+
+        position: relative;
+
+        overflow: hidden;
+    }
+
+    .operations-grid section::after {
+        content: "✦";
+
+        position: absolute;
+
+        right: 12px;
+        top: 8px;
+
+        font-size: 24px;
+
+        color: rgba(124, 58, 237, 0.10);
+    }
+
+    .operations-grid section:nth-child(2) {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 241, 231, 0.85),
+                rgba(255, 255, 255, 0.75)
+            );
+
+        border-color: #ffe2cc;
+    }
+
+    .operations-grid section:nth-child(2)::after {
+        color: rgba(249, 115, 22, 0.13);
+    }
+
+    .operation-description {
+        color: var(--muted);
+
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+    form {
+        display: grid;
+
+        gap: 12px;
+    }
+
+    label {
+        font-size: 13px;
+
+        font-weight: 700;
+
+        color: var(--muted);
+    }
+
+    input {
+        width: 100%;
+
+        padding: 14px;
+
+        border: 1px solid #d9cee6;
+
+        background: rgba(255, 255, 255, 0.9);
+
+        border-radius: 12px;
+
+        font-size: 16px;
+
+        color: var(--text);
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    input:hover {
+        border-color: #b9a4d0;
+    }
+
+    input:focus {
+        border-color: var(--purple);
+
+        box-shadow:
+            0 0 0 4px rgba(124, 58, 237, 0.10);
+
+        outline: none;
+
+        transform: translateY(-1px);
+    }
+
+    button {
+        padding: 14px;
+
+        border: 0;
+
+        border-radius: 12px;
+
+        color: white;
+
+        font-size: 14px;
+
+        font-weight: 800;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            filter 0.2s ease;
+    }
+
+    .deposit-button {
+        background:
+            linear-gradient(
+                135deg,
+                #f97316,
+                #fb923c
+            );
+
+        box-shadow:
+            0 7px 16px rgba(249, 115, 22, 0.22);
+    }
+
+    .withdraw-button {
+        background:
+            linear-gradient(
+                135deg,
+                #6d28d9,
+                #8b5cf6
+            );
+
+        box-shadow:
+            0 7px 16px rgba(109, 40, 217, 0.22);
+    }
+
+    button:hover {
+        filter: brightness(1.04);
+
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 10px 20px rgba(91, 42, 134, 0.18);
+    }
+
+    button:active {
+        transform: translateY(0);
+    }
+
+    input:focus-visible,
+    button:focus-visible {
+        outline: 3px solid rgba(249, 115, 22, 0.35);
+
+        outline-offset: 3px;
+    }
+
+    /* Success + Error Messages */
+
+    .message {
+        padding: 15px 18px;
+
+        margin-bottom: 16px;
+
+        border-radius: 15px;
+
+        line-height: 1.5;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        box-shadow:
+            0 6px 18px rgba(50, 30, 70, 0.05);
+    }
+
+    .message.success {
+        background: #eaf8ef;
+
+        color: #166534;
+
+        border: 1px solid #ccebd7;
+    }
+
+    .message.error {
+        background: #fff0f2;
+
+        color: #9f1239;
+
+        border: 1px solid #ffd5dd;
+    }
+
+    /* Transaction History */
+
+    .history {
+        margin-top: 24px;
+
+        position: relative;
+
+        overflow: hidden;
+    }
+
+    .history::before {
+        content: "✦";
+
+        position: absolute;
+
+        right: 22px;
+        top: 17px;
+
+        font-size: 30px;
+
+        color: rgba(124, 58, 237, 0.10);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+
+        border-radius: 15px;
+    }
+
+    table {
+        width: 100%;
+
+        border-collapse: separate;
+
+        border-spacing: 0;
+
+        font-size: 14px;
+    }
+
+    th,
+    td {
+        padding: 15px 12px;
+
+        border-bottom: 1px solid #eee7f5;
+
+        text-align: left;
+    }
+
+    th {
+        color: var(--purple-dark);
+
+        background: #f8f5ff;
+
+        font-size: 12px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.5px;
+    }
+
+    th:first-child {
+        border-radius: 12px 0 0 0;
+    }
+
+    th:last-child {
+        border-radius: 0 12px 0 0;
+    }
+
+    tbody tr {
+        transition:
+            background 0.18s ease;
+    }
+
+    tbody tr:hover {
+        background: #fbf9ff;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .money-column {
+        text-align: right;
+
+        white-space: nowrap;
+    }
+
+    .transaction-type {
+        font-weight: 700;
+
+        color: var(--purple-dark);
+    }
+
+    /* Footer */
+
+    footer {
+        text-align: center;
+
+        padding: 32px 20px;
+
+        color: var(--muted);
+
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+    footer::before {
+        content: "✦  ";
+
+        color: var(--orange);
+    }
+
+    footer::after {
+        content: "  ✦";
+
+        color: var(--purple);
+    }
+
+    /* Responsive Design */
+
+    @media (max-width: 850px) {
+
+        .summary-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .balance-card {
+            grid-column: 1 / -1;
+        }
+
+        .main-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 550px) {
+
+        .navbar {
+            padding: 16px 5%;
+        }
+
+        .summary-grid,
+        .operations-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome h1 {
+            font-size: 26px;
+        }
+
+        .welcome::after {
+            display: none;
+        }
+
+        .balance-card .amount {
+            font-size: 34px;
+        }
+
+        .card {
+            padding: 20px;
+        }
+
+        .brand {
+            font-size: 21px;
+        }
+
+        .demo-badge {
+            font-size: 11px;
+        }
+
+        th,
+        td {
+            padding: 12px 9px;
+        }
+    }
+</style>
+
+</head> <body>
+<header class="navbar">
+
+    <div class="brand">
+        SWAG ✦ <span>Bank</span>
+    </div>
+
+    <div class="demo-badge">
+        ✿ Demo Account
+    </div>
+
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+
+        <h1>
+            Welcome back, {{ account.name }} ♡
+        </h1>
+
+        <p>
+            View your account and manage your demo transactions.
+        </p>
+
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <div
+                class="message {{ category }}"
+                role="{{ 'alert' if category == 'error' else 'status' }}"
+            >
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+    <section
+        class="summary-grid"
+        aria-label="Account summary"
+    >
+
+        <div class="card balance-card">
+
+            <p class="card-label">
+                ✦ Available Balance
+            </p>
+
+            <p class="amount">
+                ${{ "{:,.2f}".format(balance) }}
+            </p>
+
+            <p class="card-note">
+                {{ account.currency }} · {{ account.type }}
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <p class="card-label muted">
+                ↗ Total Deposits
+            </p>
+
+            <p class="amount green">
+                ${{ "{:,.2f}".format(total_deposits) }}
+            </p>
+
+            <p class="card-note muted">
+                Since the application started
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <p class="card-label muted">
+                ↘ Total Withdrawals
+            </p>
+
+            <p class="amount red">
+                ${{ "{:,.2f}".format(total_withdrawals) }}
+            </p>
+
+            <p class="card-note muted">
+                Since the application started
+            </p>
+
+        </div>
+
+    </section>
+
+    <div class="main-grid">
+
+        <section class="card">
+
+            <h2>
+                ✿ Customer Account
+            </h2>
+
+            <div class="profile">
+
+                <div
+                    class="avatar"
+                    aria-hidden="true"
+                >
+                    {{ account.name[0] }}
+                </div>
+
+                <div>
+
+                    <p class="profile-name">
+                        {{ account.name }}
+                    </p>
+
+                    <p class="profile-note">
+                        Demo customer · SWAG member
+                    </p>
+
+                </div>
+
+            </div>
+
+            <dl class="details">
+
+                <div>
+
+                    <dt>
+                        Account Number
+                    </dt>
+
+                    <dd>
+                        {{ account.number }}
+                    </dd>
+
+                </div>
+
+                <div>
+
+                    <dt>
+                        Account Type
+                    </dt>
+
+                    <dd>
+                        {{ account.type }}
+                    </dd>
+
+                </div>
+
+                <div>
+
+                    <dt>
+                        Branch
+                    </dt>
+
+                    <dd>
+                        {{ account.branch }}
+                    </dd>
+
+                </div>
+
+                <div>
+
+                    <dt>
+                        Currency
+                    </dt>
+
+                    <dd>
+                        {{ account.currency }}
+                    </dd>
+
+                </div>
+
+            </dl>
+
+        </section>
+
+        <section class="card">
+
+            <h2>
+                ✦ Banking Operations
+            </h2>
+
+            <div class="operations-grid">
+
+                <section>
+
+                    <h3>
+                        ↗ Deposit Money
+                    </h3>
+
+                    <p class="operation-description">
+                        Add money to your demo account.
+                    </p>
+
+                    <form
+                        action="/deposit"
+                        method="POST"
+                    >
+
+                        <label for="deposit-amount">
+                            Amount in $ USD
+                        </label>
+
+                        <input
+                            id="deposit-amount"
+                            type="number"
+                            name="amount"
+                            placeholder="Example: 500.00"
+                            min="0.01"
+                            step="0.01"
+                            required
+                        >
+
+                        <button
+                            class="deposit-button"
+                            type="submit"
+                        >
+                            Deposit Money ✦
+                        </button>
+
+                    </form>
+
+                </section>
+
+                <section>
+
+                    <h3>
+                        ↘ Withdraw Money
+                    </h3>
+
+                    <p class="operation-description">
+                        Withdraw within your available balance.
+                    </p>
+
+                    <form
+                        action="/withdraw"
+                        method="POST"
+                    >
+
+                        <label for="withdraw-amount">
+                            Amount in $ USD
+                        </label>
+
+                        <input
+                            id="withdraw-amount"
+                            type="number"
+                            name="amount"
+                            placeholder="Example: 200.00"
+                            min="0.01"
+                            step="0.01"
+                            required
+                        >
+
+                        <button
+                            class="withdraw-button"
+                            type="submit"
+                        >
+                            Withdraw Money ✦
+                        </button>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <section class="card history">
+
+        <h2>
+            ✦ Transaction History
+        </h2>
+
+        <p class="muted">
+            Most recent transactions appear first.
+            Totals above exclude the opening balance.
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th scope="col">
+                            Date and Time
+                        </th>
+
+                        <th scope="col">
+                            Transaction
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="money-column"
+                        >
+                            Amount $ USD
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="money-column"
+                        >
+                            Balance $ USD
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for transaction in transactions %}
+
+                        <tr>
+
+                            <td>
+                                {{ transaction.date }}
+                            </td>
+
+                            <td class="transaction-type">
+
+                                {% if transaction.type == "Deposit" %}
+                                    ↗
+                                {% elif transaction.type == "Withdrawal" %}
+                                    ↘
+                                {% else %}
+                                    ✦
+                                {% endif %}
+
+                                {{ transaction.type }}
+
+                            </td>
+
+                            <td class="money-column">
+
+                                {% if transaction.type == "Withdrawal" %}
+
+                                    <span class="red">
+                                        -${{ "{:,.2f}".format(transaction.amount) }}
+                                    </span>
+
+                                {% elif transaction.type == "Deposit" %}
+
+                                    <span class="green">
+                                        +${{ "{:,.2f}".format(transaction.amount) }}
+                                    </span>
+
+                                {% else %}
+
+                                    ${{ "{:,.2f}".format(transaction.amount) }}
+
+                                {% endif %}
+
+                            </td>
+
+                            <td class="money-column">
+
+                                ${{ "{:,.2f}".format(transaction.balance) }}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+
+    Python Programming Assignment<br>
+
+    Classroom simulation · Data resets when Flask restarts
+
+</footer>
+</body></html>
